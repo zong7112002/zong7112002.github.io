@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>會員登入</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f0f8ff, #e6e6fa);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #4a90e2;
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 1em;
+        }
+
+        input:focus {
+            border-color: #4a90e2;
+            outline: none;
+            box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+        }
+
+        button {
+            background: #4a90e2;
+            color: white;
+            border: none;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #357abd;
+        }
+
+        button.secondary {
+            background: #ff7043;
+            margin-top: 5px;
+        }
+
+        button.secondary:hover {
+            background: #e64a19;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .cta-text {
+            color: #4a90e2;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .profile-card {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .profile-card p {
+            margin: 10px 0;
+            font-size: 1.1em;
+            color: #333;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        ul li {
+            background: #e3f2fd;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        ul li:hover {
+            background: #bbdefb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>立即登入</h1>
+
+        <!-- 登入區 -->
+        <div id="login-section">
+            <h2>登入</h2>
+            <form id="login-form">
+                <label for="email">電子郵件：</label>
+                <input type="email" id="email" placeholder="輸入您的電子郵件" required>
+                <button type="submit">登入</button>
+            </form>
+            <p class="cta-text">還不是會員？<button id="register-button" class="secondary">立即註冊</button></p>
+        </div>
+
+        <!-- 註冊區 -->
+        <div id="register-section" class="hidden">
+            <h2>註冊</h2>
+            <form id="register-form">
+                <label for="register-name">姓名：</label>
+                <input type="text" id="register-name" placeholder="輸入您的姓名" required>
+                <label for="register-email">電子郵件：</label>
+                <input type="email" id="register-email" placeholder="輸入您的電子郵件" required>
+                <label for="register-phone">聯絡電話：</label>
+                <input type="text" id="register-phone" placeholder="輸入您的聯絡電話" required>
+                <button type="submit">完成註冊</button>
+            </form>
+        </div>
+
+        <!-- 個人資料區 -->
+        <div id="profile-section" class="hidden">
+            <h2>個人資料</h2>
+            <div id="profile-info" class="profile-card"></div>
+            <button id="view-orders">查看訂單</button>
+            <button id="update-profile">更新資料</button>
+        </div>
+
+        <!-- 訂單區 -->
+        <div id="orders-section" class="hidden">
+            <h2>歷史訂單</h2>
+            <ul id="orders-list"></ul>
+        </div>
+    </div>
+
+    <script>
+        // 模擬客戶資料庫
+        const customers = {
+            "customer1@example.com": {
+                name: "王小明",
+                phone: "0912-345-678",
+                orders: [
+                    { orderId: "1001", product: "耳機", status: "已送達" },
+                    { orderId: "1002", product: "行動電源", status: "處理中" }
+                ]
+            }
+        };
+
+        const loginSection = document.getElementById("login-section");
+        const registerSection = document.getElementById("register-section");
+        const profileSection = document.getElementById("profile-section");
+        const ordersSection = document.getElementById("orders-section");
+        const profileInfo = document.getElementById("profile-info");
+        const ordersList = document.getElementById("orders-list");
+
+        // 切換到註冊界面
+        document.getElementById("register-button").addEventListener("click", () => {
+            loginSection.classList.add("hidden");
+            registerSection.classList.remove("hidden");
+        });
+
+        // 註冊功能
+        document.getElementById("register-form").addEventListener("submit", function (e) {
+            e.preventDefault();
+            const name = document.getElementById("register-name").value;
+            const email = document.getElementById("register-email").value;
+            const phone = document.getElementById("register-phone").value;
+
+            if (customers[email]) {
+                alert("該電子郵件已被註冊！");
+            } else {
+                customers[email] = { name, phone, orders: [] };
+                alert("註冊成功，現在您可以登入！");
+                registerSection.classList.add("hidden");
+                loginSection.classList.remove("hidden");
+            }
+        });
+
+        // 登入功能
+        document.getElementById("login-form").addEventListener("submit", function (e) {
+            e.preventDefault();
+            const email = document.getElementById("email").value;
+
+            if (customers[email]) {
+                loginSection.classList.add("hidden");
+                profileSection.classList.remove("hidden");
+                const customer = customers[email];
+                profileInfo.innerHTML = `
+                    <p><strong>姓名：</strong>${customer.name}</p>
+                    <p><strong>聯絡電話：</strong>${customer.phone}</p>
+                `;
+                profileSection.dataset.email = email;
+            } else {
+                alert("未找到該客戶！");
+            }
+        });
+
+        // 查看訂單
+        document.getElementById("view-orders").addEventListener("click", function () {
+            const email = profileSection.dataset.email;
+            const customer = customers[email];
+            ordersList.innerHTML = "";
+            customer.orders.forEach(order => {
+                const li = document.createElement("li");
+                li.textContent = `訂單編號：${order.orderId}，產品：${order.product}，狀態：${order.status}`;
+                ordersList.appendChild(li);
+            });
+            ordersSection.classList.remove("hidden");
+        });
+    </script>
+</body>
+</html>
